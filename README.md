@@ -1,4 +1,4 @@
 NtcipLed
 ========
 
-Android
+NtcipLed client for Android
