@@ -1,0 +1,40 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@color/black"
+    tools:context="com.szu.test.MainActivity" >
+
+    <TextView
+        android:id="@+id/text_show"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/warning"
+        android:gravity="center"
+        android:text="机场南线欢迎你"
+        android:textColor="@color/yellow"
+        android:textSize="64sp" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_show"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/sys_error"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="系统错误" />
+
+        <Button
+            android:id="@+id/screen_error"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="屏幕错误" />
+    </LinearLayout>
+
+</RelativeLayout>
