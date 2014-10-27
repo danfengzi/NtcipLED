@@ -13,10 +13,10 @@ import android.util.Log;
 
 public class UdpHelper {
 	private final String TAG = getClass().getSimpleName();
-	
+
 	private final String SERVER_ADDRESS = "127.0.0.1";
 	private final int SERVER_PORT = 1234;
-	private final int LISTEN_PORT = 2345;
+
 	Context mContext;
 	UdpEventListener mEventListener;
 	WifiManager manager;
@@ -25,6 +25,7 @@ public class UdpHelper {
 
 	UdpListenerRunnable listenerRunnable;
 	Thread recvThread;
+	boolean isReceiveThreadRunning = false;
 
 	DatagramSocket senderSocket = null;
 	InetAddress serverAddress = null;
@@ -33,6 +34,7 @@ public class UdpHelper {
 		this.mContext = context;
 		this.manager = manager;
 		this.mEventListener = listener;
+		isReceiveThreadRunning = false;
 
 	}
 
@@ -60,7 +62,10 @@ public class UdpHelper {
 	}
 
 	public void startListen() {
-		recvThread.start();
+		Log.d(TAG, "startListen");
+		if (!isReceiveThreadRunning) {
+			recvThread.start();
+		}
 	}
 
 	public void send(byte[] buffer) {
@@ -75,7 +80,7 @@ public class UdpHelper {
 		try {
 
 			senderSocket.send(p);
-			senderSocket.close();
+			// senderSocket.close();
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -84,7 +89,6 @@ public class UdpHelper {
 	}
 
 	public class UdpListenerRunnable implements Runnable {
-		public Boolean IsThreadDisable = false;// 指示监听线程是否终止
 		private WifiManager.MulticastLock lock;
 
 		public UdpListenerRunnable(WifiManager manager) {
@@ -97,11 +101,12 @@ public class UdpHelper {
 			byte[] message = new byte[100 * 1024];
 			try {
 				// 建立Socket连接
-				DatagramSocket datagramSocket = new DatagramSocket(LISTEN_PORT);
+				DatagramSocket datagramSocket = new DatagramSocket(SERVER_PORT);
 				datagramSocket.setBroadcast(true);
 				DatagramPacket datagramPacket = new DatagramPacket(message, message.length);
 				try {
 					while (!IsThreadDisable) {
+						isReceiveThreadRunning = true;
 						// 准备接收数据
 						Log.d("UDP Demo", "准备接收数据");
 						this.lock.acquire();

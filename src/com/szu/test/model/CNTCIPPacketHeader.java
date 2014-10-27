@@ -12,8 +12,16 @@ public class CNTCIPPacketHeader extends AbstractNtcipLedModel {
 	private int packetSize; // 消息长度
 	private int packetId; // 详细序列号
 
-	public CNTCIPPacketHeader() {
-		// TODO Auto-generated constructor stub
+	public CNTCIPPacketHeader(){
+		
+	}
+	
+	public CNTCIPPacketHeader(short packetType, short headRsv, int packetSize, int packetId) {
+		this.packetType = packetType;
+		this.headRsv = headRsv;
+		this.packetSize = packetSize;
+		this.packetId = packetId;
+
 	}
 
 	/**
@@ -85,12 +93,12 @@ public class CNTCIPPacketHeader extends AbstractNtcipLedModel {
 	@Override
 	public byte[] toBytes() {
 		// TODO Auto-generated method stub
-		byte[] buffer = new byte[8];
-		System.arraycopy(BytesUtil.getBytes(getPacketType()), 0, buffer, 0, 2);
-		System.arraycopy(BytesUtil.getBytes(getHeadRsv()), 0, buffer, 2, 2);
-		System.arraycopy(BytesUtil.getBytes(getPacketSize()), 0, buffer, 4, 2);
-		System.arraycopy(BytesUtil.getBytes(getPacketId()), 0, buffer, 6, 2);
-		return null;
+		byte[] buffer = new byte[12];
+		System.arraycopy(BytesUtil.short2Byte_BigEndian(getPacketType()), 0, buffer, 0, 2);
+		System.arraycopy(BytesUtil.short2Byte_BigEndian(getHeadRsv()), 0, buffer, 2, 2);
+		System.arraycopy(BytesUtil.int2Byte_BigEndian(getPacketSize()), 0, buffer, 4, 4);
+		System.arraycopy(BytesUtil.int2Byte_BigEndian(getPacketId()), 0, buffer, 8, 4);
+		return buffer;
 	}
 
 	@Override

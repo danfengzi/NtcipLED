@@ -346,4 +346,217 @@ public class BytesUtil {
 		System.arraycopy(from, 0, to, 0, from.length);
 		return to;
 	}
+
+	/**
+	* 16位 convert big-endian to little-endian 
+	* 大字节序 -> 小字节序
+	* */
+	public static final short bigEndian2LittleEndian16(short x) {
+		return (short) ((x & 0xFF) << 8 | 0xFF & (x >> 8));
+	}
+
+	/**
+	* 32位  convert big to little-edian 
+	* 大字节序 -> 小字节序
+	* */
+	public static final int bigEndian2LittleEndian32(int x) {
+		return (x & 0xFF) << 24 | (0xFF & x >> 8) << 16 | (0xFF & x >> 16) << 8 | (0xFF & x >> 24);
+	}
+
+	/**
+	* 小字节序
+	* @param intValue
+	* @return
+	*/
+	public static byte[] int2Byte_LittleEndian(int intValue) {// int--->byte(低--高)
+		byte[] b = new byte[4];
+		b[0] = (byte) (intValue & 0xff);
+		b[1] = (byte) ((intValue >> 8) & 0xff);
+		b[2] = (byte) ((intValue >> 16) & 0xff);
+		b[3] = (byte) ((intValue >> 24) & 0xff);
+		return b;
+	}
+
+	/**
+	* 16位 小字节序
+	* @param intValue
+	* @return
+	*/
+	public static byte[] short2Byte_LittleEndian(short intValue) {// short--->byte(低--高)
+		byte[] b = new byte[2];
+		b[0] = (byte) (intValue & 0xff);
+		b[1] = (byte) ((intValue >> 8) & 0xff);
+		return b;
+	}
+
+	/**
+	* 小字节序 byte[]--->int
+	* @param b
+	* @param pos 位置
+	* @return
+	*/
+	public static int byte2int_LittleEndian(byte b[], int pos) {// byte(低---高)--->int
+		int b0 = (b[pos] & 0xff);
+		int b1 = (b[pos + 1] & 0xff) << 8;
+		int b2 = (b[pos + 2] & 0xff) << 16;
+		int b3 = (b[pos + 3] & 0xff) << 24;
+		int result = (b0 | b1 | b2 | b3);
+		return result;
+	}
+
+	/**
+	* 64位 小字节序
+	* @param value
+	* @return
+	*/
+	public static byte[] long2Byte_LittleEndian(long value) {// long--->byte(低--高)
+		byte[] b = new byte[8];
+		b[0] = (byte) (value & 0xff);
+		b[1] = (byte) ((value >> 8) & 0xff);
+		b[2] = (byte) ((value >> 16) & 0xff);
+		b[3] = (byte) ((value >> 24) & 0xff);
+		b[4] = (byte) ((value >> 32) & 0xff);
+		b[5] = (byte) ((value >> 40) & 0xff);
+		b[6] = (byte) ((value >> 48) & 0xff);
+		b[7] = (byte) ((value >> 56) & 0xff);
+		return b;
+	}
+
+	/**
+	* 小字节序 byte[]--->long
+	* @param b
+	* @param pos 位置
+	* @return
+	*/
+	public static long byte2long_LittleEndian(byte b[], int pos) {// byte(低---高)
+		long b0 = (b[pos] & 0xff);
+		long b1 = (b[pos + 1] & 0xff) << 8;
+		long b2 = (b[pos + 2] & 0xff) << 16;
+		long b3 = (b[pos + 3] & 0xff) << 24;
+		long b4 = (b[pos + 4] & 0xff) << 32;
+		long b5 = (b[pos + 5] & 0xff) << 40;
+		long b6 = (b[pos + 6] & 0xff) << 48;
+		long b7 = (b[pos + 7] & 0xff) << 56;
+		long result = (b0 | b1 | b2 | b3 | b4 | b5 | b6 | b7);
+		return result;
+	}
+
+	/**
+	* 小字节序 byte[]--->short
+	* @param b
+	* @param pos 位置
+	* @return
+	*/
+	public static short byte2short_LittleEndian(byte b[], int pos) {// byte(低---高)
+		short b0 = (short) (b[pos] & 0xff);
+		short b1 = (short) ((b[pos + 1] & 0xff) << 8);
+		return (short) (b0 | b1);
+	}
+
+	/**
+	*16位  convert big-endian to little-endian
+	* 大字节序 -> 小字节序
+	* */
+	public static final short littleEndian2BigEndian16(short x) {
+		return (short) ((x & 0xFF) << 8 | 0xFF & (x >> 8));
+	}
+
+	/**
+	* 32位 convert little-edian to big-edian
+	* 小字节序 -> 大字节序
+	* */
+	public static final int littleEndian2BigEndian32(int x) {
+		return bigEndian2LittleEndian32(x);
+	}
+
+	/**
+	*32位  大字节序
+	* @param intValue
+	* @return
+	*/
+	public static byte[] int2Byte_BigEndian(int intValue) {// int--->byte(高--低)
+		byte[] b = new byte[4];
+		b[0] = (byte) (intValue >> 24 & 0xff);
+		b[1] = (byte) ((intValue >> 16) & 0xff);
+		b[2] = (byte) ((intValue >> 8) & 0xff);
+		b[3] = (byte) ((intValue) & 0xff);
+		return b;
+	}
+
+	/**
+	*16位  大字节序
+	* @param intValue
+	* @return
+	*/
+	public static byte[] short2Byte_BigEndian(short intValue) {// short--->byte(高--低)
+		byte[] b = new byte[2];
+		b[0] = (byte) ((intValue >> 8) & 0xff);
+		b[1] = (byte) ((intValue) & 0xff);
+		return b;
+	}
+
+	/**
+	 * 大字节序 byte[]---->int
+	 * @param b
+	 * @param pos
+	 * @return
+	 */
+	public static int byte2int_BigEndian(byte b[], int pos) {// byte(高---低)--->int
+		int b0 = (b[pos + 3] & 0xff);
+		int b1 = (b[pos + 2] & 0xff) << 8;
+		int b2 = (b[pos + 1] & 0xff) << 16;
+		int b3 = (b[pos] & 0xff) << 24;
+		int result = (b0 | b1 | b2 | b3);
+		return result;
+	}
+
+	/**
+	*64位  大字节序  long--->byte
+	* @param value
+	* @return
+	*/
+	public static byte[] long2Byte_BigEndian(long value) {// long--->byte(高--低)
+		byte[] b = new byte[8];
+		b[7] = (byte) (value & 0xff);
+		b[6] = (byte) ((value >> 8) & 0xff);
+		b[5] = (byte) ((value >> 16) & 0xff);
+		b[4] = (byte) ((value >> 24) & 0xff);
+		b[3] = (byte) ((value >> 32) & 0xff);
+		b[2] = (byte) ((value >> 40) & 0xff);
+		b[1] = (byte) ((value >> 48) & 0xff);
+		b[0] = (byte) ((value >> 56) & 0xff);
+		return b;
+	}
+
+	/**
+	 * 大字节序 byte[]---->long
+	 * @param b
+	 * @param pos
+	 * @return
+	 */
+	public static long byte2long_BigEndian(byte b[], int pos) {// byte(高---低)
+		long b0 = (b[pos + 7] & 0xff);
+		long b1 = (b[pos + 6] & 0xff) << 8;
+		long b2 = (b[pos + 5] & 0xff) << 16;
+		long b3 = (b[pos + 4] & 0xff) << 24;
+		long b4 = (b[pos + 3] & 0xff) << 32;
+		long b5 = (b[pos + 2] & 0xff) << 40;
+		long b6 = (b[pos + 1] & 0xff) << 48;
+		long b7 = (b[pos] & 0xff) << 56;
+		long result = (b0 | b1 | b2 | b3 | b4 | b5 | b6 | b7);
+		return result;
+	}
+
+	/**
+	 * 大字节序 byte[]---->short
+	 * @param b
+	 * @param pos
+	 * @return
+	 */
+	public static short byte2short_BigEndian(byte b[], int pos) {// byte(高---低)
+		short b1 = (short) (b[pos] & 0xff);
+		short b0 = (short) ((b[pos + 1] & 0xff) << 8);
+		return (short) (b0 | b1);
+	}
+
 }
