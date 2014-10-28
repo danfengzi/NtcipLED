@@ -3,15 +3,16 @@ package com.szu.test;
 public class ContantType {
 
 	public static final int MSG_RECEIVED = 0x01;
-
-	public static final short IV_LED_REG_REQ = 0x11; // 屏幕注册消息请求
-	public static final short IV_LED_REG_ACK = 0x12; // 屏幕注册消息响应
-	public static final short IV_LED_MSGDIS_REQ = 0x13; // 屏幕显示消息请求
-	public static final short IV_LED_MSGDIS_ACK = 0x14; // 屏幕显示消息响应
-	public static final short IV_LED_FAULTNOTIFY_REQ = 0x15; // 屏幕故障消息通知
-	public static final short IV_LED_FAULTNOTIFY_ACK = 0x16;// 屏幕故障消息响应
-	public static final short IV_LED_CONTROL_REQ = 0x17;// 屏幕控制信令请求
-	public static final short IV_LED_CONTROL_ACK = 0x18; // 屏幕控制信令响应
+	
+	//数据包类型代码11~18
+	public static final short IV_LED_REG_REQ = 11; // 屏幕注册消息请求
+	public static final short IV_LED_REG_ACK = 12; // 屏幕注册消息响应
+	public static final short IV_LED_MSGDIS_REQ = 13; // 屏幕显示消息请求
+	public static final short IV_LED_MSGDIS_ACK = 14; // 屏幕显示消息响应
+	public static final short IV_LED_FAULTNOTIFY_REQ = 15; // 屏幕故障消息通知
+	public static final short IV_LED_FAULTNOTIFY_ACK = 16;// 屏幕故障消息响应
+	public static final short IV_LED_CONTROL_REQ = 17;// 屏幕控制信令请求
+	public static final short IV_LED_CONTROL_ACK = 18; // 屏幕控制信令响应
 
 	public static final int TEXT_COLOR_RED = 1;
 	public static final int TEXT_COLOR_GREEN = 2;
