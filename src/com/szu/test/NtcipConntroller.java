@@ -179,7 +179,7 @@ public class NtcipConntroller implements UdpEventListener {
 
 	public void registerRequest() {
 		CNTCIPPacketHeader header = new CNTCIPPacketHeader(ContantType.IV_LED_REG_REQ, (short) 0, 100, 100);
-		NtcipLedRegReq request = new NtcipLedRegReq(header, BytesUtil.getBytes("abcdefghijk"), 1);
+		NtcipLedRegReq request = new NtcipLedRegReq(header, BytesUtil.getBytes("GD-SZ-SZU-TYROAD001"), 1);
 		sendThread.setToSendBuffer(request.toBytes());
 		mSendHandler.post(sendThread);
 	}
