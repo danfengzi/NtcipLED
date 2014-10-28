@@ -1,7 +1,7 @@
 package com.szu.test.common;
 
 public class ConstantType {
-	//test
+	//test11
 	// 消息类型
 	public final static int IV_LED_REG_REQ = 11; // 屏幕注册消息请求
 	public final static int IV_LED_REG_ACK = 12; // 屏幕注册消息响应
