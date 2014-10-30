@@ -7,15 +7,18 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import com.szu.test.ContantType;
+
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
 public class UdpHelper {
 	private final String TAG = getClass().getSimpleName();
 
-	private final String SERVER_ADDRESS = "127.0.0.1";
-	private final int SERVER_PORT = 1234;
+	// private final String SERVER_ADDRESS = "127.0.0.1";
+	// private final int SERVER_PORT = 1234;
 
 	Context mContext;
 	UdpEventListener mEventListener;
@@ -29,6 +32,8 @@ public class UdpHelper {
 
 	DatagramSocket senderSocket = null;
 	InetAddress serverAddress = null;
+	static String ipAddress = null;
+	static int serverPort = 0;
 
 	public UdpHelper(Context context, WifiManager manager, UdpEventListener listener) {
 		this.mContext = context;
@@ -45,6 +50,17 @@ public class UdpHelper {
 		prepareSender();
 	}
 
+	protected void loadConfig() {
+		SharedPreferences mSharedPreferences = mContext.getSharedPreferences(mContext.getPackageName(),
+				Context.MODE_PRIVATE);
+		ipAddress = mSharedPreferences.getString(ContantType.KEY_SERVER_ADDRESS, "");
+		serverPort = mSharedPreferences.getInt(ContantType.KEY_SERVER_PORT, ContantType.DEFAULT_PORT);
+	}
+
+	public void reLoadConfig() {
+		loadConfig();
+	}
+
 	protected void prepareSender() {
 		try {
 			senderSocket = new DatagramSocket();
@@ -54,7 +70,7 @@ public class UdpHelper {
 		}
 
 		try {
-			serverAddress = InetAddress.getByName(SERVER_ADDRESS);
+			serverAddress = InetAddress.getByName(ipAddress);
 		} catch (UnknownHostException e) {
 			Log.e(TAG, new StringBuilder("UnknownHostException: ").append(e).toString());
 			e.printStackTrace();
@@ -76,7 +92,7 @@ public class UdpHelper {
 
 		int msg_length = buffer.length;
 
-		DatagramPacket p = new DatagramPacket(buffer, msg_length, serverAddress, SERVER_PORT);
+		DatagramPacket p = new DatagramPacket(buffer, msg_length, serverAddress, serverPort);
 		try {
 
 			senderSocket.send(p);
@@ -101,7 +117,7 @@ public class UdpHelper {
 			byte[] message = new byte[100 * 1024];
 			try {
 				// 建立Socket连接
-				DatagramSocket datagramSocket = new DatagramSocket(SERVER_PORT);
+				DatagramSocket datagramSocket = new DatagramSocket(serverPort, serverAddress);
 				datagramSocket.setBroadcast(true);
 				DatagramPacket datagramPacket = new DatagramPacket(message, message.length);
 				try {
