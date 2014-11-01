@@ -21,7 +21,7 @@ public class SettingsActivity extends Activity {
 
 	SharedPreferences mSharedPreferences;
 
-	TextView screenIdTextView, keyTextView, ipAddressTextView, portTextView;
+	TextView screenIdTextView, keyTextView, ipAddressTextView, portTextView, screenKeyTextView;
 	Button saveButton;
 
 	@Override
@@ -37,6 +37,8 @@ public class SettingsActivity extends Activity {
 		keyTextView = (TextView) findViewById(R.id.key);
 		ipAddressTextView = (TextView) findViewById(R.id.server_ip_address);
 		portTextView = (TextView) findViewById(R.id.server_port);
+		screenKeyTextView = (TextView) findViewById(R.id.screen_key);
+		
 		saveButton = (Button) findViewById(R.id.setting_save);
 		saveButton.setOnClickListener(new OnClickListener() {
 
@@ -54,13 +56,16 @@ public class SettingsActivity extends Activity {
 
 	protected void resumeSetting() {
 		String screenIdString = mSharedPreferences.getString(ContantType.KEY_SCREEN_ID, "");
-		String keyString = mSharedPreferences.getString(ContantType.KEY_KEY_STRING, ContantType.DEFAULT_KEY);
+		String keyString = mSharedPreferences.getString(ContantType.KEY_SERVER_KEY, ContantType.DEFAULT_SERVER_KEY);
 		String addresString = mSharedPreferences.getString(ContantType.KEY_SERVER_ADDRESS, "");
 		int port = mSharedPreferences.getInt(ContantType.KEY_SERVER_PORT, 12345);
+		String screenKeyString = mSharedPreferences.getString(ContantType.KEY_SCREEN_KEY, ContantType.DEFAULT_SCREEN_KEY);
+		
 		screenIdTextView.setText(screenIdString);
 		keyTextView.setText(keyString);
 		ipAddressTextView.setText(addresString);
 		portTextView.setText(String.valueOf(port));
+		screenKeyTextView.setText(screenKeyString);
 	}
 
 	protected void saveSettings() {
@@ -78,11 +83,14 @@ public class SettingsActivity extends Activity {
 			portTextView.setError("请输入合法端口号");
 		}
 
+		String screenKey = screenIdTextView.getText().toString();
+		
 		SharedPreferences.Editor editor = mSharedPreferences.edit();
 		editor.putString(ContantType.KEY_SCREEN_ID, screenIdString);
-		editor.putString(ContantType.KEY_KEY_STRING, keyString);
+		editor.putString(ContantType.KEY_SERVER_KEY, keyString);
 		editor.putString(ContantType.KEY_SERVER_ADDRESS, addresString);
 		editor.putInt(ContantType.KEY_SERVER_PORT, port);
+		editor.putString(ContantType.KEY_SCREEN_KEY, screenKey);
 		editor.apply();
 	}
 

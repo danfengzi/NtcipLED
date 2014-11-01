@@ -108,6 +108,15 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		if (conntroller != null) {
+			conntroller.onServerConfigureChanged();
+		}
+	}
+	
+	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {

@@ -63,6 +63,11 @@ public class NtcipConntroller implements UdpEventListener {
 		udpHelper.startListen();
 	}
 
+	public void onServerConfigureChanged(){
+		if (udpHelper != null) {
+			udpHelper.reLoadConfig();
+		}
+	}
 	@Override
 	public void onDataReceive(byte[] buffer) {
 		// TODO Auto-generated method stub

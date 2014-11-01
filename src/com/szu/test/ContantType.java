@@ -19,9 +19,11 @@ public class ContantType {
 	public static final int TEXT_COLOR_BLUE = 3;
 	
 	public static final String KEY_SCREEN_ID = "screen_id";
-	public static final String KEY_KEY_STRING = "key";
+	public static final String KEY_SERVER_KEY = "server_key";
 	public static final String KEY_SERVER_ADDRESS = "server_address";
 	public static final String KEY_SERVER_PORT = "server_port";
-	public static final String DEFAULT_KEY = "DZNTCIP";
+	public static final String KEY_SCREEN_KEY = "screen_key";
+	public static final String DEFAULT_SERVER_KEY = "DZNTCIP";
+	public static final String DEFAULT_SCREEN_KEY = "LED";
 	public static final int DEFAULT_PORT = 23456;
 }

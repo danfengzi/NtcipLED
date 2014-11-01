@@ -7,7 +7,9 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import com.szu.test.Configuration;
 import com.szu.test.ContantType;
+import com.szu.test.utils.D;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -31,6 +33,8 @@ public class UdpHelper {
 	boolean isReceiveThreadRunning = false;
 
 	DatagramSocket senderSocket = null;
+	DatagramSocket receiverSocket = null;
+	
 	InetAddress serverAddress = null;
 	static String ipAddress = null;
 	static int serverPort = 0;
@@ -45,20 +49,36 @@ public class UdpHelper {
 
 	public void prepare() {
 		WifiManager manager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
+		
+		if (IsThreadDisable) {
+			IsThreadDisable = true;
+			recvThread.interrupt();
+		}
+		
 		listenerRunnable = new UdpListenerRunnable(manager);
 		recvThread = new Thread(listenerRunnable);
+		
+		loadConfig();
 		prepareSender();
 	}
 
 	protected void loadConfig() {
-		SharedPreferences mSharedPreferences = mContext.getSharedPreferences(mContext.getPackageName(),
-				Context.MODE_PRIVATE);
-		ipAddress = mSharedPreferences.getString(ContantType.KEY_SERVER_ADDRESS, "");
-		serverPort = mSharedPreferences.getInt(ContantType.KEY_SERVER_PORT, ContantType.DEFAULT_PORT);
+		ipAddress = Configuration.getInstance().getServerIpConfig();
+		serverPort = Configuration.getInstance().getServerPortConfig();
+		D.d(TAG, String.format("ip: %s port = %d", ipAddress, serverPort));
+		
+		
+		try {
+			serverAddress = InetAddress.getByName(ipAddress);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 	public void reLoadConfig() {
-		loadConfig();
+		prepare();
 	}
 
 	protected void prepareSender() {
@@ -91,7 +111,7 @@ public class UdpHelper {
 		}
 
 		int msg_length = buffer.length;
-
+		D.d(TAG, "-----server address : "+serverAddress.getHostAddress());
 		DatagramPacket p = new DatagramPacket(buffer, msg_length, serverAddress, serverPort);
 		try {
 
@@ -117,8 +137,8 @@ public class UdpHelper {
 			byte[] message = new byte[100 * 1024];
 			try {
 				// 建立Socket连接
-				DatagramSocket datagramSocket = new DatagramSocket(serverPort, serverAddress);
-				datagramSocket.setBroadcast(true);
+				receiverSocket = new DatagramSocket(serverPort, serverAddress);
+				receiverSocket.setBroadcast(true);
 				DatagramPacket datagramPacket = new DatagramPacket(message, message.length);
 				try {
 					while (!IsThreadDisable) {
@@ -126,8 +146,8 @@ public class UdpHelper {
 						// 准备接收数据
 						Log.d("UDP Demo", "准备接收数据");
 						this.lock.acquire();
-
-						datagramSocket.receive(datagramPacket);
+						D.d(TAG, String.format("Running ip: %s port = %d", ipAddress, serverPort));
+						receiverSocket.receive(datagramPacket);
 						if (mEventListener != null) {
 							mEventListener.onDataReceive(datagramPacket.getData());
 						}

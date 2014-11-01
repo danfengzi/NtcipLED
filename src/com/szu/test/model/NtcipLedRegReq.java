@@ -114,14 +114,22 @@ public class NtcipLedRegReq extends AbstractNtcipLedModel {
 		}
 
 		byte[] buffer = new byte[112];
+		// 包头
 		System.arraycopy(getPacketHeader().toBytes(), 0, buffer, 0, 12);
-		digest.update(getPacketHeader().toBytes());
+		// digest.update(getPacketHeader().toBytes());
+		// 屏幕id
 		System.arraycopy(getLedId(), 0, buffer, 12, getLedId().length);
-		digest.update(getLedId());
+		// digest.update(getLedId());
+		// 状态
 		System.arraycopy(BytesUtil.int2Byte_BigEndian(getWorkStatus()), 0, buffer, 12 + getLedId().length, 4);
-		digest.update(BytesUtil.int2Byte_BigEndian(getWorkStatus()));
-		digest.update(getMsgDig());
-		System.arraycopy(MD5Util.Md5(digest.digest()), 0, buffer, 16 + getLedId().length, 16);
+		// digest.update(BytesUtil.int2Byte_BigEndian(getWorkStatus()));
+		// digest.update(getMsgDig());
+		// 摘要
+		System.arraycopy(getMsgDig(), 0, buffer, 16 + getLedId().length, getMsgDig().length);
+		//MD5
+		digest.update(buffer);
+		//将md5填充到摘要字段
+		System.arraycopy(MD5Util.Md5(digest.digest()), 0, buffer, 16 + getLedId().length, getMsgDig().length);
 		return buffer;
 	}
 
