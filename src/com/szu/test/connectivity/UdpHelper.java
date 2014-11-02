@@ -34,7 +34,7 @@ public class UdpHelper {
 
 	DatagramSocket senderSocket = null;
 	DatagramSocket receiverSocket = null;
-	
+
 	InetAddress serverAddress = null;
 	static String ipAddress = null;
 	static int serverPort = 0;
@@ -49,15 +49,15 @@ public class UdpHelper {
 
 	public void prepare() {
 		WifiManager manager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
-		
+
 		if (IsThreadDisable) {
 			IsThreadDisable = true;
 			recvThread.interrupt();
 		}
-		
+
 		listenerRunnable = new UdpListenerRunnable(manager);
 		recvThread = new Thread(listenerRunnable);
-		
+
 		loadConfig();
 		prepareSender();
 	}
@@ -66,15 +66,14 @@ public class UdpHelper {
 		ipAddress = Configuration.getInstance().getServerIpConfig();
 		serverPort = Configuration.getInstance().getServerPortConfig();
 		D.d(TAG, String.format("ip: %s port = %d", ipAddress, serverPort));
-		
-		
+
 		try {
 			serverAddress = InetAddress.getByName(ipAddress);
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	public void reLoadConfig() {
@@ -111,8 +110,9 @@ public class UdpHelper {
 		}
 
 		int msg_length = buffer.length;
-		D.d(TAG, "-----server address : "+serverAddress.getHostAddress());
+		D.d(TAG, "-----server address : " + serverAddress.getHostAddress());
 		DatagramPacket p = new DatagramPacket(buffer, msg_length, serverAddress, serverPort);
+		
 		try {
 
 			senderSocket.send(p);
@@ -137,7 +137,7 @@ public class UdpHelper {
 			byte[] message = new byte[100 * 1024];
 			try {
 				// 建立Socket连接
-				receiverSocket = new DatagramSocket(serverPort, serverAddress);
+				receiverSocket = new DatagramSocket(serverPort);
 				receiverSocket.setBroadcast(true);
 				DatagramPacket datagramPacket = new DatagramPacket(message, message.length);
 				try {
@@ -148,6 +148,13 @@ public class UdpHelper {
 						this.lock.acquire();
 						D.d(TAG, String.format("Running ip: %s port = %d", ipAddress, serverPort));
 						receiverSocket.receive(datagramPacket);
+						
+						InetAddress returnIPAddress = datagramPacket.getAddress();
+
+						int port = datagramPacket.getPort();
+
+						D.d(TAG, "From server at: " + returnIPAddress + ":" + port);
+						
 						if (mEventListener != null) {
 							mEventListener.onDataReceive(datagramPacket.getData());
 						}
