@@ -28,7 +28,11 @@ public class Configuration {
 	}
 
 	public String getScreenIdConfig() {
-		return mSharedPreferences.getString(ContantType.KEY_SCREEN_ID, "");
+		return mSharedPreferences.getString(ContantType.KEY_SCREEN_ID, ContantType.DEFAULT_SCREEN_ID);
+	}
+	
+	public String getScreenKeyConfig() {
+		return mSharedPreferences.getString(ContantType.KEY_SCREEN_KEY, ContantType.DEFAULT_SCREEN_KEY);
 	}
 
 	public String getServerKeyConfig() {
@@ -36,11 +40,11 @@ public class Configuration {
 	}
 
 	public String getServerIpConfig() {
-		return mSharedPreferences.getString(ContantType.KEY_SERVER_ADDRESS, "");
+		return mSharedPreferences.getString(ContantType.KEY_SERVER_ADDRESS, ContantType.DEFAULT_SERVER_ADDRESS);
 	}
 
 	public int getServerPortConfig() {
-		return mSharedPreferences.getInt(ContantType.KEY_SERVER_PORT, ContantType.DEFAULT_PORT);
+		return mSharedPreferences.getInt(ContantType.KEY_SERVER_PORT, ContantType.DEFAULT_SERVER_PORT);
 	}
 
 	public void saveStringConfig(String key, String value) {

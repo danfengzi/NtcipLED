@@ -17,6 +17,7 @@ import com.szu.test.connectivity.UdpHelper;
 import com.szu.test.model.CNTCIPPacketHeader;
 import com.szu.test.model.NtcipLedAck;
 import com.szu.test.model.NtcipLedControlReq;
+import com.szu.test.model.NtcipLedFaultNotifyReq;
 import com.szu.test.model.NtcipLedMsgdisReq;
 import com.szu.test.model.NtcipLedRegReq;
 import com.szu.test.utils.BytesUtil;
@@ -109,23 +110,38 @@ public class NtcipConntroller implements UdpEventListener {
 	private void handleLedRegAck(byte[] buffer) {
 		// TODO: on NTCIP_LED_REG_ACK received
 		NtcipLedAck response = new NtcipLedAck();
-		response.refresh(buffer);
+		if(response.refresh(buffer) == 1) {
+			showResult("注册校验成功");
+		} else {
+			showResult("注册校验失败");
+		}
 		response.printf();
 	}
 
 	private void handleLedFaultNotityAck(byte[] buffer) {
 		// TODO: on NTCIP_LED_FAULTNOTIFY_ACK received
 		NtcipLedAck responseAck = new NtcipLedAck();
-		responseAck.refresh(buffer);
+		if(responseAck.refresh(buffer) == 1) {
+			showResult("错误上报校验成功");
+		} else {
+			showResult("错误上报校验失败");
+		}
 		responseAck.printf();
 	}
 
 	private void handleLedControlRequest(byte[] buffer) {
 		// TODO Auto-generated method stub
 		NtcipLedControlReq request = new NtcipLedControlReq();
-		request.refresh(buffer);
-		int controlCode = request.getControlCode();
-		onCtrollerCodeReceived(controlCode);
+		if(request.refresh(buffer) == 1) {
+			int controlCode = request.getControlCode();
+			onCtrollerCodeReceived(controlCode);
+			showResult("控制指令校验成功--指令：" + controlCode);
+			// TODO: 回Ack给服务器
+			responseAck(ContantType.IV_LED_CONTROL_ACK, 1);
+		} else {
+			showResult("控制指令校验失败");
+			responseAck(ContantType.IV_LED_CONTROL_ACK, 0);
+		}
 	}
 
 	private void onCtrollerCodeReceived(int controlCode) {
@@ -136,20 +152,44 @@ public class NtcipConntroller implements UdpEventListener {
 	private void handleLedMsgdisRequest(byte[] buffer) {
 		// TODO Auto-generated method stub
 		NtcipLedMsgdisReq request = new NtcipLedMsgdisReq();
-		request.refresh(buffer);
-		request.printf();
-		String textString = request.getTxtMString();
-		int textColor = getTextColor(request.getTxtColor());
-		int textSize = request.getTxtSize();
-		Drawable drawable = request.getMapImage().getImageDrawable();
-
-		if ((listener != null) && (drawable != null)) {
-			// 回调给界面显示
-			listener.onScreenUpdate(textString, textColor, textSize, drawable);
+		if(request.refresh(buffer) == 1) {
+			showResult("显示指令校验成功");
+			String textString = request.getTxtMString();
+			int textColor = getTextColor(request.getTxtColor());
+			int textSize = request.getTxtSize();
+			Drawable drawable = request.getMapImage().getImageDrawable();
+	
+			if ((listener != null) && (drawable != null)) {
+				// 回调给界面显示
+				listener.onScreenUpdate(textString, textColor, textSize, drawable);
+			}
+			// TODO: 回Ack给服务器
+			responseAck(ContantType.IV_LED_MSGDIS_ACK, 1);
+		} else {
+			showResult("显示指令校验失败");
+			// TODO: 回Ack给服务器
+			responseAck(ContantType.IV_LED_MSGDIS_ACK, 0);
 		}
-		// TODO: 回Ack给服务器
+		request.printf();
+	}
+	
+	// TODO: 回Ack给服务器
+	private void responseAck(short type, int result){
+		CNTCIPPacketHeader header = new CNTCIPPacketHeader(type, (short) 0, 100, 100);
 		NtcipLedAck ntcipLedAck = new NtcipLedAck();
-
+		ntcipLedAck.setPacketHeader(header);
+		ntcipLedAck.setLedId(BytesUtil.getBytes(Configuration.getInstance().getScreenIdConfig()));
+		ntcipLedAck.setReqResult(result);
+		ntcipLedAck.setMsgDig(BytesUtil.getBytes(Configuration.getInstance().getServerKeyConfig()));
+		sendThread.setToSendBuffer(ntcipLedAck.toBytes());
+		mSendHandler.post(sendThread);
+	}
+	
+	private void showResult(String result){
+		if (listener != null) {
+			// 回调给界面显示
+			listener.onResultShow(result);
+		}
 	}
 
 	private int getTextColor(short txtColor) {
@@ -175,16 +215,34 @@ public class NtcipConntroller implements UdpEventListener {
 
 	public void sendSysErrorRequest() {
 		// TODO:发送系统故障请求
-
+		CNTCIPPacketHeader header = new CNTCIPPacketHeader(ContantType.IV_LED_REG_REQ, (short) 0, 100, 100);
+		NtcipLedFaultNotifyReq request = new NtcipLedFaultNotifyReq();
+		request.setPacketHeader(header);
+		request.setLedId(BytesUtil.getBytes(Configuration.getInstance().getScreenIdConfig()));
+		request.setFaultCode(2);
+		request.setMsgDig(BytesUtil.getBytes(Configuration.getInstance().getScreenKeyConfig()));
+		request.printf();
+		sendThread.setToSendBuffer(request.toBytes());
+		mSendHandler.post(sendThread);
 	}
 
 	public void sendScreenErrorRequest() {
 		// TODO：发送屏幕故障请求
+		CNTCIPPacketHeader header = new CNTCIPPacketHeader(ContantType.IV_LED_REG_REQ, (short) 0, 100, 100);
+		NtcipLedFaultNotifyReq request = new NtcipLedFaultNotifyReq();
+		request.setPacketHeader(header);
+		request.setLedId(BytesUtil.getBytes(Configuration.getInstance().getScreenIdConfig()));
+		request.setFaultCode(1);
+		request.setMsgDig(BytesUtil.getBytes(Configuration.getInstance().getScreenKeyConfig()));
+		request.printf();
+		sendThread.setToSendBuffer(request.toBytes());
+		mSendHandler.post(sendThread);
 	}
 
 	public void registerRequest() {
 		CNTCIPPacketHeader header = new CNTCIPPacketHeader(ContantType.IV_LED_REG_REQ, (short) 0, 100, 100);
-		NtcipLedRegReq request = new NtcipLedRegReq(header, BytesUtil.getBytes("GD-SZ-SZU-TYROAD001"), 1);
+		NtcipLedRegReq request = new NtcipLedRegReq(header, BytesUtil.getBytes(Configuration.getInstance().getScreenIdConfig()), 1);
+		request.printf();
 		sendThread.setToSendBuffer(request.toBytes());
 		mSendHandler.post(sendThread);
 	}

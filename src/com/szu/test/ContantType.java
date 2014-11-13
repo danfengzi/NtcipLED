@@ -25,5 +25,7 @@ public class ContantType {
 	public static final String KEY_SCREEN_KEY = "screen_key";
 	public static final String DEFAULT_SERVER_KEY = "DZNTCIP";
 	public static final String DEFAULT_SCREEN_KEY = "LED";
-	public static final int DEFAULT_PORT = 23456;
+	public static final String DEFAULT_SERVER_ADDRESS = "192.168.1.100";
+	public static final int DEFAULT_SERVER_PORT = 10201;
+	public static final String DEFAULT_SCREEN_ID = "GD-SZ-SZU-TYROAD001";
 }

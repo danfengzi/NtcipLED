@@ -5,6 +5,7 @@ import java.security.NoSuchAlgorithmException;
 
 import android.util.Log;
 
+import com.szu.test.Configuration;
 import com.szu.test.utils.BytesUtil;
 import com.szu.test.utils.MD5Util;
 
@@ -20,9 +21,9 @@ public class NtcipLedRegReq extends AbstractNtcipLedModel {
 	public NtcipLedRegReq(CNTCIPPacketHeader packetHeader, byte[] ledId, int workStatus) {
 		// TODO Auto-generated constructor stub
 		this.packetHeader = packetHeader;
-		this.ledId = ledId;
+		setLedId(ledId);
 		this.workStatus = workStatus;
-		this.msgDig = BytesUtil.getBytes(DIG_KEY);
+		this.msgDig = BytesUtil.getBytes(Configuration.getInstance().getScreenKeyConfig());
 	}
 
 	/**
@@ -50,7 +51,8 @@ public class NtcipLedRegReq extends AbstractNtcipLedModel {
 	 * @param ledId the ledId to set
 	 */
 	public void setLedId(byte[] ledId) {
-		this.ledId = ledId;
+//		this.ledId = ledId;
+		System.arraycopy(ledId, 0, this.ledId, 0, ledId.length);
 	}
 
 	public String getLedIdString() {
@@ -82,7 +84,8 @@ public class NtcipLedRegReq extends AbstractNtcipLedModel {
 	 * @param msgDig the msgDig to set
 	 */
 	public void setMsgDig(byte[] msgDig) {
-		this.msgDig = msgDig;
+//		this.msgDig = msgDig;
+		System.arraycopy(msgDig, 0, this.msgDig, 0, msgDig.length);
 	}
 
 	@Override
@@ -105,14 +108,6 @@ public class NtcipLedRegReq extends AbstractNtcipLedModel {
 	public byte[] toBytes() {
 		// TODO Auto-generated method stub
 
-		try {
-			digest = MessageDigest.getInstance("MD5");
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			Log.e(TAG, e.toString());
-		}
-
 		byte[] buffer = new byte[112];
 		// 包头
 		System.arraycopy(getPacketHeader().toBytes(), 0, buffer, 0, 12);
@@ -127,9 +122,10 @@ public class NtcipLedRegReq extends AbstractNtcipLedModel {
 		// 摘要
 		System.arraycopy(getMsgDig(), 0, buffer, 16 + getLedId().length, getMsgDig().length);
 		//MD5
-		digest.update(buffer);
 		//将md5填充到摘要字段
-		System.arraycopy(MD5Util.Md5(digest.digest()), 0, buffer, 16 + getLedId().length, getMsgDig().length);
+		byte[] tempMsgDig = new byte[32];
+		System.arraycopy(MD5Util.Md5(buffer), 0, tempMsgDig, 0, 16);
+		System.arraycopy(tempMsgDig, 0, buffer, 16 + getLedId().length, 32);
 		return buffer;
 	}
 

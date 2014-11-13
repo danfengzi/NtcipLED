@@ -1,8 +1,13 @@
 package com.szu.test.model;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import android.util.Log;
 
+import com.szu.test.Configuration;
 import com.szu.test.utils.BytesUtil;
+import com.szu.test.utils.MD5Util;
 
 public class NtcipLedMsgdisReq extends AbstractNtcipLedModel {
 
@@ -150,7 +155,13 @@ public class NtcipLedMsgdisReq extends AbstractNtcipLedModel {
 		setMapImage(image);
 
 		setMsgDig(BytesUtil.readBytes(buffer, 208 + imageSize + 4, 32));
-		return 0;
+		
+		//校验
+		if(MD5Util.isIllegal(buffer, msgDig)) {
+			return 1;
+		} else {
+			return 0;
+		}
 	}
 
 	@Override

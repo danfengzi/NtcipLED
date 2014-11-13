@@ -1,8 +1,13 @@
 package com.szu.test.model;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import android.util.Log;
 
+import com.szu.test.Configuration;
 import com.szu.test.utils.BytesUtil;
+import com.szu.test.utils.MD5Util;
 
 public class NtcipLedControlReq extends AbstractNtcipLedModel {
 
@@ -90,7 +95,13 @@ public class NtcipLedControlReq extends AbstractNtcipLedModel {
 		setLedId(BytesUtil.readBytes(buffer, 12, ledId.length));
 		setControlCode(BytesUtil.getInt(BytesUtil.readBytes(buffer, 12 + ledId.length, 4)));
 		setMsgDig(BytesUtil.readBytes(buffer, 16 + ledId.length, msgDig.length));
-		return 0;
+		
+		//校验
+		if(MD5Util.isIllegal(buffer, msgDig)) {
+			return 1;
+		} else {
+			return 0;
+		}
 	}
 
 	@Override

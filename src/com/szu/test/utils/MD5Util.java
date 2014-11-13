@@ -3,6 +3,8 @@ package com.szu.test.utils;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import com.szu.test.Configuration;
+
 import android.util.Log;
 
 public class MD5Util {
@@ -31,5 +33,25 @@ public class MD5Util {
 			Log.e("", e.toString());
 		}
 		return BytesUtil.getBytes(result);
+	}
+	
+	public static boolean isIllegal(byte[] buffer, byte[] msgDig) {
+		//校验
+		byte[] key = new byte[32];
+		System.arraycopy(key, 0, msgDig, 0, 16);
+		
+		byte[] serverKey = new byte[32];
+		byte[] serverBytes = BytesUtil.getBytes(Configuration.getInstance().getServerKeyConfig());
+		System.arraycopy(serverBytes, 0, serverKey, 0, serverBytes.length);
+		System.arraycopy(serverKey, 0, buffer, buffer.length - 32, 32);
+		byte[] result = MD5Util.Md5(buffer);
+
+		String strKey = BytesUtil.getString(key, "GBK");
+		String strResult = BytesUtil.getString(result, "GBK");
+		if(strKey.equals(strResult)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

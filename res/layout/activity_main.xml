@@ -17,6 +17,7 @@
         android:textSize="64sp" />
 
     <LinearLayout
+        android:id="@+id/linear1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/text_show"
@@ -35,6 +36,27 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="屏幕错误" />
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linear1"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/settings"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="设置" />
+
+        <Button
+            android:id="@+id/register"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="注册" />
     </LinearLayout>
 
 </RelativeLayout>

@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.szu.test.connectivity.NtcipEventListener;
 import com.szu.test.connectivity.UdpHelper;
@@ -27,6 +28,8 @@ public class MainActivity extends Activity implements OnClickListener {
 	private TextView tv_hintShow;
 	private Button btn_SysErr;
 	private Button btn_ScreenErr;
+	private Button btn_Settings;
+	private Button btn_Register;
 
 	HandlerThread workThread;
 	EventHandler mHandler;
@@ -65,6 +68,10 @@ public class MainActivity extends Activity implements OnClickListener {
 		btn_SysErr.setOnClickListener(this);
 		btn_ScreenErr = (Button) findViewById(R.id.screen_error);
 		btn_ScreenErr.setOnClickListener(this);
+		btn_Settings = (Button) findViewById(R.id.settings);
+		btn_Settings.setOnClickListener(this);
+		btn_Register = (Button) findViewById(R.id.register);
+		btn_Register.setOnClickListener(this);
 
 		initCompotents();
 
@@ -91,6 +98,16 @@ public class MainActivity extends Activity implements OnClickListener {
 						if (drawable != null) {
 							tv_hintShow.setCompoundDrawables(drawable, null, null, null);
 						}
+					}
+				});
+			}
+
+			@Override
+			public void onResultShow(final String result) {
+				// TODO Auto-generated method stub
+				MainActivity.this.runOnUiThread(new Runnable(){
+					public void run(){
+						Toast.makeText(mContext, result, Toast.LENGTH_SHORT).show();
 					}
 				});
 			}
@@ -122,12 +139,18 @@ public class MainActivity extends Activity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.sys_error:
 			// TODO:响应系统错误按钮点击事件
-			// conntroller.sendSysErrorRequest();
-			conntroller.registerRequest();
+			conntroller.sendSysErrorRequest();
 			break;
 		case R.id.screen_error:
 			// TODO:响应系统错误按钮点击事件
 			conntroller.sendScreenErrorRequest();
+			break;
+		case R.id.settings:
+			Intent intent = new Intent(mContext, SettingsActivity.class);
+			startActivity(intent);
+			break;
+		case R.id.register:
+			conntroller.registerRequest();
 			break;
 		default:
 			break;

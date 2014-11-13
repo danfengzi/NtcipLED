@@ -45,9 +45,10 @@ public class SettingsActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				saveSettings();
-				Toast.makeText(getApplicationContext(), "设置保存成功", Toast.LENGTH_SHORT).show();
-				SettingsActivity.this.finish();
+				if(saveSettings()) {
+					Toast.makeText(getApplicationContext(), "设置保存成功", Toast.LENGTH_SHORT).show();
+					SettingsActivity.this.finish();
+				}
 			}
 		});
 		mSharedPreferences = this.getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
@@ -55,11 +56,16 @@ public class SettingsActivity extends Activity {
 	}
 
 	protected void resumeSetting() {
-		String screenIdString = mSharedPreferences.getString(ContantType.KEY_SCREEN_ID, "");
-		String keyString = mSharedPreferences.getString(ContantType.KEY_SERVER_KEY, ContantType.DEFAULT_SERVER_KEY);
-		String addresString = mSharedPreferences.getString(ContantType.KEY_SERVER_ADDRESS, "");
-		int port = mSharedPreferences.getInt(ContantType.KEY_SERVER_PORT, 12345);
-		String screenKeyString = mSharedPreferences.getString(ContantType.KEY_SCREEN_KEY, ContantType.DEFAULT_SCREEN_KEY);
+//		String screenIdString = mSharedPreferences.getString(ContantType.KEY_SCREEN_ID, ContantType.DEFAULT_SCREEN_ID);
+//		String keyString = mSharedPreferences.getString(ContantType.KEY_SERVER_KEY, ContantType.DEFAULT_SERVER_KEY);
+//		String addresString = mSharedPreferences.getString(ContantType.KEY_SERVER_ADDRESS, ContantType.DEFAULT_SERVER_ADDRESS);
+//		int port = mSharedPreferences.getInt(ContantType.KEY_SERVER_PORT, ContantType.DEFAULT_SERVER_PORT);
+//		String screenKeyString = mSharedPreferences.getString(ContantType.KEY_SCREEN_KEY, ContantType.DEFAULT_SCREEN_KEY);
+		String screenIdString = Configuration.getInstance().getScreenIdConfig();
+		String keyString = Configuration.getInstance().getServerKeyConfig();
+		String addresString = Configuration.getInstance().getServerIpConfig();
+		int port = Configuration.getInstance().getServerPortConfig();
+		String screenKeyString = Configuration.getInstance().getScreenKeyConfig();
 		
 		screenIdTextView.setText(screenIdString);
 		keyTextView.setText(keyString);
@@ -68,22 +74,24 @@ public class SettingsActivity extends Activity {
 		screenKeyTextView.setText(screenKeyString);
 	}
 
-	protected void saveSettings() {
+	protected boolean saveSettings() {
 		String screenIdString = screenIdTextView.getText().toString();
 		String keyString = keyTextView.getText().toString();
 		String addresString = ipAddressTextView.getText().toString();
 
 		if (!validateIpAddress(addresString)) {
 			ipAddressTextView.setError("请输入合法IP地址");
+			return false;
 		}
 
 		int port = Integer.parseInt(portTextView.getText().toString());
 
 		if ((port < 0) || (port > 65535)) {
 			portTextView.setError("请输入合法端口号");
+			return false;
 		}
 
-		String screenKey = screenIdTextView.getText().toString();
+		String screenKey = screenKeyTextView.getText().toString();
 		
 		SharedPreferences.Editor editor = mSharedPreferences.edit();
 		editor.putString(ContantType.KEY_SCREEN_ID, screenIdString);
@@ -92,6 +100,7 @@ public class SettingsActivity extends Activity {
 		editor.putInt(ContantType.KEY_SERVER_PORT, port);
 		editor.putString(ContantType.KEY_SCREEN_KEY, screenKey);
 		editor.apply();
+		return true;
 	}
 
 	@Override

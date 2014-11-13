@@ -1,8 +1,12 @@
 package com.szu.test.model;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import android.util.Log;
 
 import com.szu.test.utils.BytesUtil;
+import com.szu.test.utils.MD5Util;
 
 public class NtcipLedFaultNotifyReq extends AbstractNtcipLedModel {
 
@@ -46,7 +50,8 @@ public class NtcipLedFaultNotifyReq extends AbstractNtcipLedModel {
 	 * @param ledId the ledId to set
 	 */
 	public void setLedId(byte[] ledId) {
-		this.ledId = ledId;
+//		this.ledId = ledId;
+		System.arraycopy(ledId, 0, this.ledId, 0, ledId.length);
 	}
 
 	/**
@@ -78,7 +83,8 @@ public class NtcipLedFaultNotifyReq extends AbstractNtcipLedModel {
 	 * @param msgDig the msgDig to set
 	 */
 	public void setMsgDig(byte[] msgDig) {
-		this.msgDig = msgDig;
+//		this.msgDig = msgDig;
+		System.arraycopy(msgDig, 0, this.msgDig, 0, msgDig.length);
 	}
 
 	@Override
@@ -101,6 +107,11 @@ public class NtcipLedFaultNotifyReq extends AbstractNtcipLedModel {
 		System.arraycopy(getLedId(), 0, buffer, 12, getLedId().length);
 		System.arraycopy(BytesUtil.getBytes(getFaultCode()), 0, buffer, 12 + getLedId().length, 4);
 		System.arraycopy(getMsgDig(), 0, buffer, 16 + getLedId().length, getMsgDig().length);
+		
+		//将md5填充到摘要字段
+		byte[] tempMsgDig = new byte[32];
+		System.arraycopy(MD5Util.Md5(buffer), 0, tempMsgDig, 0, 16);
+		System.arraycopy(tempMsgDig, 0, buffer, 16 + getLedId().length, 32);
 		return buffer;
 	}
 

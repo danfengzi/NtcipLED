@@ -38,6 +38,7 @@ public class UdpHelper {
 	InetAddress serverAddress = null;
 	static String ipAddress = null;
 	static int serverPort = 0;
+	private static final int localPort = 13131;
 
 	public UdpHelper(Context context, WifiManager manager, UdpEventListener listener) {
 		this.mContext = context;
@@ -82,7 +83,7 @@ public class UdpHelper {
 
 	protected void prepareSender() {
 		try {
-			senderSocket = new DatagramSocket();
+			senderSocket = new DatagramSocket(localPort);
 		} catch (SocketException e) {
 			e.printStackTrace();
 			Log.e(TAG, new StringBuilder("SocketException: ").append(e).toString());
@@ -121,8 +122,10 @@ public class UdpHelper {
 		} catch (IOException e) {
 			e.printStackTrace();
 			Log.e(TAG, new StringBuilder("Error happened when send buffer: ").append(e).toString());
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-	}
+	} 
 
 	public class UdpListenerRunnable implements Runnable {
 		private WifiManager.MulticastLock lock;
@@ -137,7 +140,7 @@ public class UdpHelper {
 			byte[] message = new byte[100 * 1024];
 			try {
 				// 建立Socket连接
-				receiverSocket = new DatagramSocket(serverPort);
+				receiverSocket = new DatagramSocket(localPort + 1);
 				receiverSocket.setBroadcast(true);
 				DatagramPacket datagramPacket = new DatagramPacket(message, message.length);
 				try {
