@@ -84,7 +84,7 @@ public class NtcipConntroller implements UdpEventListener {
 	public void handleIncommingData(byte[] buffer) {
 		CNTCIPPacketHeader header = new CNTCIPPacketHeader();
 		header.refresh(buffer);
-		switch (header.getPacketId()) {
+		switch (header.getPacketType()) {
 		case ContantType.IV_LED_MSGDIS_REQ:
 			// 收到IV_LED_MSGDIS_REQ请求
 			handleLedMsgdisRequest(buffer);
@@ -240,7 +240,7 @@ public class NtcipConntroller implements UdpEventListener {
 	}
 
 	public void registerRequest() {
-		CNTCIPPacketHeader header = new CNTCIPPacketHeader(ContantType.IV_LED_REG_REQ, (short) 0, 100, 100);
+		CNTCIPPacketHeader header = new CNTCIPPacketHeader(ContantType.IV_LED_REG_REQ, (short) 0, 112, 100);
 		NtcipLedRegReq request = new NtcipLedRegReq(header, BytesUtil.getBytes(Configuration.getInstance().getScreenIdConfig()), 1);
 		request.printf();
 		sendThread.setToSendBuffer(request.toBytes());

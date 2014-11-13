@@ -96,7 +96,7 @@ public class NtcipLedAck extends AbstractNtcipLedModel {
 		header.refresh(BytesUtil.readBytes(buffer, 0, 12));
 		setPacketHeader(header);
 		setLedId(BytesUtil.readBytes(buffer, 12, ledId.length));
-		setReqResult(BytesUtil.getInt(BytesUtil.readBytes(buffer, 12 + ledId.length, 4)));
+		setReqResult(BytesUtil.byte2int_BigEndian(buffer, 12 + ledId.length));
 		setMsgDig(BytesUtil.readBytes(buffer, 16 + ledId.length, msgDig.length));
 		
 		//校验

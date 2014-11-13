@@ -554,8 +554,8 @@ public class BytesUtil {
 	 * @return
 	 */
 	public static short byte2short_BigEndian(byte b[], int pos) {// byte(高---低)
-		short b1 = (short) (b[pos] & 0xff);
-		short b0 = (short) ((b[pos + 1] & 0xff) << 8);
+		short b1 = (short) (b[pos + 1] & 0xff);
+		short b0 = (short) ((b[pos] & 0xff) << 8);
 		return (short) (b0 | b1);
 	}
 

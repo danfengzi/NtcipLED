@@ -83,10 +83,10 @@ public class CNTCIPPacketHeader extends AbstractNtcipLedModel {
 	@Override
 	public int refresh(byte[] buffer) {
 		// TODO Auto-generated method stub
-		setPacketType(BytesUtil.getShort(BytesUtil.readBytes(buffer, 0, 2)));
-		setHeadRsv(BytesUtil.getShort(BytesUtil.readBytes(buffer, 2, 2)));
-		setPacketSize(BytesUtil.getInt(BytesUtil.readBytes(buffer, 4, 4)));
-		setPacketId(BytesUtil.getInt(BytesUtil.readBytes(buffer, 8, 4)));
+		setPacketType(BytesUtil.byte2short_BigEndian(buffer, 0));
+		setHeadRsv(BytesUtil.byte2short_BigEndian(buffer, 2));
+		setPacketSize(BytesUtil.byte2int_BigEndian(buffer, 4));
+		setPacketId(BytesUtil.byte2int_BigEndian(buffer, 8));
 		return 0;
 	}
 

@@ -38,12 +38,16 @@ public class MD5Util {
 	public static boolean isIllegal(byte[] buffer, byte[] msgDig) {
 		//校验
 		byte[] key = new byte[32];
-		System.arraycopy(key, 0, msgDig, 0, 16);
+		System.arraycopy(msgDig, 0, key, 0, 16);
 		
+		//使用服务器密钥
 		byte[] serverKey = new byte[32];
 		byte[] serverBytes = BytesUtil.getBytes(Configuration.getInstance().getServerKeyConfig());
 		System.arraycopy(serverBytes, 0, serverKey, 0, serverBytes.length);
-		System.arraycopy(serverKey, 0, buffer, buffer.length - 32, 32);
+		
+		
+		System.arraycopy(serverKey, 0, buffer, BytesUtil.byte2int_BigEndian(buffer, 4) - 32, 32);
+		
 		byte[] result = MD5Util.Md5(buffer);
 
 		String strKey = BytesUtil.getString(key, "GBK");
