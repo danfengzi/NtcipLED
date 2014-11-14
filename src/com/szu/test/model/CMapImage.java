@@ -63,7 +63,7 @@ public class CMapImage extends AbstractNtcipLedModel {
 	@Override
 	public int refresh(byte[] buffer) {
 		// TODO Auto-generated method stub
-		setImageSize(BytesUtil.getInt(BytesUtil.readBytes(buffer, 0, 4)));
+		setImageSize(BytesUtil.byte2int_BigEndian(buffer,0));
 		setImage(BytesUtil.readBytes(buffer, 4, getImageSize()));
 		return 0;
 	}

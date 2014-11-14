@@ -65,7 +65,8 @@ public class NtcipLedMsgdisReq extends AbstractNtcipLedModel {
 	}
 
 	public String getTxtMString() {
-		return new StringBuilder().append(getTxtMsg()).toString();
+//		return new StringBuilder().append(getTxtMsg()).toString();	
+		return BytesUtil.getString(getTxtMsg(), "GBK");
 	}
 
 	/**
@@ -146,14 +147,21 @@ public class NtcipLedMsgdisReq extends AbstractNtcipLedModel {
 		setPacketHeader(header);
 		setLedId(BytesUtil.readBytes(buffer, 12, 64));
 		setTxtMsg(BytesUtil.readBytes(buffer, 76, 128));
-		setTxtSize(BytesUtil.getShort(BytesUtil.readBytes(buffer, 204, 2)));
-		setTxtColor(BytesUtil.getShort(BytesUtil.readBytes(buffer, 206, 2)));
-
-		int imageSize = BytesUtil.getInt(BytesUtil.readBytes(buffer, 208, 4));
-		CMapImage image = new CMapImage();
-		image.refresh(BytesUtil.readBytes(buffer, 208, imageSize + 4));
+		setTxtSize(BytesUtil.byte2short_BigEndian(buffer, 204));
+		setTxtColor(BytesUtil.byte2short_BigEndian(buffer, 206));
+		
+		//载入图片
+		CMapImage image = null;
+		int imageSize = BytesUtil.byte2int_BigEndian(buffer, 208);
+		if(imageSize != 0){
+			image = new CMapImage();
+			image.refresh(BytesUtil.readBytes(buffer, 208, imageSize + 4));
+		}		
 		setMapImage(image);
 
+		//无图像,跳过1个字节的占位符
+		if(imageSize == 0)
+			imageSize += 1;
 		setMsgDig(BytesUtil.readBytes(buffer, 208 + imageSize + 4, 32));
 		
 		//校验

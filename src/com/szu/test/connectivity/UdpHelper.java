@@ -136,8 +136,8 @@ public class UdpHelper {
 
 		@Override
 		public void run() {
-			// 接收的字节大小，客户端发送的数据不能超过这个大小
-			byte[] message = new byte[100 * 1024];
+			//图像 <= 1MB + 消息 <= 1KB，缓冲区大小设为 1025KB
+			byte[] message = new byte[1024 * 1024 + 1024];
 			try {
 				// 建立Socket连接
 				receiverSocket = new DatagramSocket(localPort + 1);
@@ -155,7 +155,7 @@ public class UdpHelper {
 						InetAddress returnIPAddress = datagramPacket.getAddress();
 
 						int port = datagramPacket.getPort();
-
+						
 						D.d(TAG, "From server at: " + returnIPAddress + ":" + port);
 						
 						if (mEventListener != null) {

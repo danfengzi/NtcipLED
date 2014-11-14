@@ -105,6 +105,7 @@ public class NtcipLedAck extends AbstractNtcipLedModel {
 		} else {
 			return 0;
 		}
+
 	}
 
 	@Override
@@ -113,7 +114,7 @@ public class NtcipLedAck extends AbstractNtcipLedModel {
 		byte[] buffer = new byte[112];
 		System.arraycopy(getPacketHeader().toBytes(), 0, buffer, 0, 12);
 		System.arraycopy(getLedId(), 0, buffer, 12, getLedId().length);
-		System.arraycopy(BytesUtil.getBytes(getReqResult()), 0, buffer, 12 + getLedId().length, 4);
+		System.arraycopy(BytesUtil.int2Byte_BigEndian(getReqResult()), 0, buffer, 12 + getLedId().length, 4);
 		System.arraycopy(getMsgDig(), 0, buffer, 16 + getLedId().length, getMsgDig().length);
 		
 		//将md5填充到摘要字段
