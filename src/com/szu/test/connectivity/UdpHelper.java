@@ -136,8 +136,8 @@ public class UdpHelper {
 
 		@Override
 		public void run() {
-			//图像 <= 1MB + 消息 <= 1KB，缓冲区大小设为 1025KB
-			byte[] message = new byte[1024 * 1024 + 1024];
+			//图像 <= 63kB + 消息 <= 1KB，缓冲区大小设为 64KB
+			byte[] message = new byte[64 * 1024];
 			try {
 				// 建立Socket连接
 				receiverSocket = new DatagramSocket(localPort + 1);

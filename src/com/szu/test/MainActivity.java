@@ -93,11 +93,13 @@ public class MainActivity extends Activity implements OnClickListener {
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
+						
 						tv_hintShow.setTextColor(textColor);
-						tv_hintShow.setText(hint);
+						tv_hintShow.setText(hint);					
 						if (drawable != null) {
-							tv_hintShow.setCompoundDrawables(drawable, null, null, null);
+							drawable.setBounds(0, 0, 128,128);
 						}
+						tv_hintShow.setCompoundDrawables(drawable, null, null, null);
 					}
 				});
 			}
