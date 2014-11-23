@@ -14,7 +14,7 @@
         android:gravity="center"
         android:text="机场南线欢迎你"   
         android:textColor="@color/yellow"
-        android:textSize="64sp" />
+        android:textSize="46pt" />
 
     <LinearLayout
         android:id="@+id/linear1"

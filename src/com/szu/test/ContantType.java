@@ -14,9 +14,18 @@ public class ContantType {
 	public static final short IV_LED_CONTROL_REQ = 17;// 屏幕控制信令请求
 	public static final short IV_LED_CONTROL_ACK = 18; // 屏幕控制信令响应
 
+	//黑色、红色、黄色、绿色、青色、蓝色、紫红色、白色、橙色、琥珀色
+	public static final int TEXT_COLOR_BLACK = 0;
 	public static final int TEXT_COLOR_RED = 1;
-	public static final int TEXT_COLOR_GREEN = 2;
-	public static final int TEXT_COLOR_BLUE = 3;
+	public static final int TEXT_COLOR_YELLOW = 2;
+	public static final int TEXT_COLOR_GREEN = 3;
+	public static final int TEXT_COLOR_CYAN = 4;		//青色，蓝绿色
+	public static final int TEXT_COLOR_BLUE = 5;
+	public static final int TEXT_COLOR_AMARANTH = 6;	//紫红色
+	public static final int TEXT_COLOR_WHITE = 7;
+	public static final int TEXT_COLOR_ORANGE = 8;
+	public static final int TEXT_COLOR_AMBER = 9;		//琥珀色
+	
 	
 	public static final String KEY_SCREEN_ID = "screen_id";
 	public static final String KEY_SERVER_KEY = "server_key";
@@ -28,4 +37,6 @@ public class ContantType {
 	public static final String DEFAULT_SERVER_ADDRESS = "192.168.1.100";
 	public static final int DEFAULT_SERVER_PORT = 10201;
 	public static final String DEFAULT_SCREEN_ID = "GD-SZ-SZU-TYROAD001";
+
+	
 }

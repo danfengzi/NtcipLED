@@ -17,9 +17,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.util.TypedValue;
 import com.szu.test.connectivity.NtcipEventListener;
-import com.szu.test.connectivity.UdpHelper;
 
 public class MainActivity extends Activity implements OnClickListener {
 	private final String TAG = "MainActivity";
@@ -36,6 +35,8 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	Runnable udpRunnable;
 	NtcipEventListener mEventListener;
+	
+	boolean isSendRegister = true;
 
 	public class EventHandler extends Handler {
 		public EventHandler(Looper looper) {
@@ -76,7 +77,23 @@ public class MainActivity extends Activity implements OnClickListener {
 		initCompotents();
 
 		mHandler.post(udpRunnable);
-
+		
+		isSendRegister = true;
+		
+		new Thread(new Runnable(){
+			public void run(){
+				while(isSendRegister){
+					try{
+						Thread.sleep(1000 * 45);	
+					}catch(Exception e){
+						e.printStackTrace();
+					}
+					if(conntroller != null){
+						conntroller.registerRequest();
+					}
+				}
+			}
+		}).start();
 	}
 
 	protected void initCompotents() {
@@ -87,7 +104,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		mEventListener = new NtcipEventListener() {
 
 			@Override
-			public void onScreenUpdate(final String hint, final int textColor, int textSize, final Drawable drawable) {
+			public void onScreenUpdate(final String hint, final int textColor, final int textSize, final Drawable drawable) {
 				tv_hintShow.post(new Runnable() {
 
 					@Override
@@ -95,7 +112,10 @@ public class MainActivity extends Activity implements OnClickListener {
 						// TODO Auto-generated method stub
 						
 						tv_hintShow.setTextColor(textColor);
-						tv_hintShow.setText(hint);					
+						tv_hintShow.setText(hint);							
+						Integer iSize = new Integer(textSize);	
+						tv_hintShow.setTextSize(TypedValue.COMPLEX_UNIT_PT,iSize.floatValue());
+						
 						if (drawable != null) {
 							drawable.setBounds(0, 0, 128,128);
 						}
@@ -136,29 +156,57 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 	
 	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		isSendRegister = false;
+	}
+	
+	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.sys_error:
 			// TODO:响应系统错误按钮点击事件
-			conntroller.sendSysErrorRequest();
+			if(conntroller != null){
+				conntroller.sendSysErrorRequest();
+			}
 			break;
 		case R.id.screen_error:
 			// TODO:响应系统错误按钮点击事件
-			conntroller.sendScreenErrorRequest();
+			if(conntroller != null){
+				conntroller.sendScreenErrorRequest();
+			}
 			break;
 		case R.id.settings:
-			Intent intent = new Intent(mContext, SettingsActivity.class);
-			startActivity(intent);
+			Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+			MainActivity.this.startActivityForResult(intent, Activity.RESULT_FIRST_USER);
 			break;
 		case R.id.register:
-			conntroller.registerRequest();
+			if(conntroller != null){
+				conntroller.registerRequest();
+			}
 			break;
 		default:
 			break;
 		}
 	}
 
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		switch(resultCode){
+		case SettingsActivity.RESULT_SAVE_SUCCESS:
+			if(conntroller != null){
+				conntroller.registerRequest();
+			}
+			break;
+		default:
+			break;
+		}
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub

@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -14,6 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class SettingsActivity extends Activity {
+	
+	public static final int RESULT_SAVE_SUCCESS = 1000;
 
 	private static final String PATTERN = "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
 			+ "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." + "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
@@ -47,6 +50,7 @@ public class SettingsActivity extends Activity {
 				// TODO Auto-generated method stub
 				if(saveSettings()) {
 					Toast.makeText(getApplicationContext(), "设置保存成功", Toast.LENGTH_SHORT).show();
+					SettingsActivity.this.setResult(RESULT_SAVE_SUCCESS);
 					SettingsActivity.this.finish();
 				}
 			}

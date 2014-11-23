@@ -211,16 +211,36 @@ public class NtcipConntroller implements UdpEventListener {
 		// 默认红色
 		int color = Color.RED;
 		switch (txtColor) {
+		case ContantType.TEXT_COLOR_BLACK:
+			color = Color.BLACK;
+			break;
 		case ContantType.TEXT_COLOR_RED:
 			color = Color.RED;
+			break;
+		case ContantType.TEXT_COLOR_YELLOW:
+			color = Color.YELLOW;
 			break;
 		case ContantType.TEXT_COLOR_GREEN:
 			color = Color.GREEN;
 			break;
+		case ContantType.TEXT_COLOR_CYAN:		//青色，蓝绿色
+			color = Color.CYAN;
+			break;
 		case ContantType.TEXT_COLOR_BLUE:
 			color = Color.BLUE;
 			break;
-
+		case ContantType.TEXT_COLOR_AMARANTH:	//紫红色
+			color = Color.rgb(255, 0, 10);
+			break;
+		case ContantType.TEXT_COLOR_WHITE:
+			color = Color.WHITE;
+			break;
+		case ContantType.TEXT_COLOR_ORANGE:
+			color = Color.rgb(255, 97, 0);
+			break;
+		case ContantType.TEXT_COLOR_AMBER:
+			color = Color.rgb(255, 191, 0);
+			break;
 		default:
 			break;
 		}
